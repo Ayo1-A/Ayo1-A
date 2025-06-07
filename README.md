@@ -1,13 +1,1509 @@
-- 👋 Hi, I’m @Ayo1-A
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Royale</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #f39c12;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --pink-color: #ff69b4;
+            --hover-color: #ecf0f1;
+        }
+        /* Reset and Global Styles */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: var(--card-color);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        .logout-btn {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #c62828;
+        }
+        /* Profile Card */
+        #profile-card {
+            background-color: var(--card-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--hover-color));
+            transition: box-shadow 0.3s ease;
+        }
+        #profile-card:hover {
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 1.2em;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .user-info {
+            text-align: left;
+            flex: 1;
+        }
+        .username {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .currency {
+            font-size: 1em;
+            color: var(--success-color);
+            margin-top: 5px;
+            display: inline-block;
+            background-color: #e8f5e9;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border-left: 3px solid var(--success-color);
+        }
+        .grade {
+            font-size: 1em;
+            color: var(--accent-color);
+            margin-top: 5px;
+            display: block;
+        }
+        /* Feature Cards */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background-color: var(--card-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, border-left-color 0.3s ease;
+            border-left: 5px solid var(--accent-color);
+            text-align: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--pink-color);
+        }
+        /* Game Section */
+        #game-section {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .status {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .game-controls {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-template-rows: repeat(3, 120px);
+            gap: 15px;
+            margin: 20px auto;
+            perspective: 1000px;
+            transform: rotateX(10deg);
+            padding: 20px;
+            background-color: var(--card-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            min-width: 400px;
+        }
+        .cell {
+            width: 120px;
+            height: 120px;
+            background-color: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 64px;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            backface-visibility: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .cell:hover {
+            background-color: #2980b9;
+            transform: scale(1.1) rotateY(360deg);
+        }
+        .cell.x {
+            color: var(--error-color);
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+        .cell.o {
+            color: var(--success-color);
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+        .winning-line {
+            position: absolute;
+            background: linear-gradient(90deg, var(--accent-color), var(--pink-color));
+            height: 8px;
+            z-index: 10;
+            animation: winning-animation 1s ease-in-out forwards;
+            box-shadow: 0 0 10px var(--pink-color);
+        }
+        @keyframes winning-animation {
+            0% { transform: scaleX(0); opacity: 0.5; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn.orange {
+            background-color: var(--accent-color);
+        }
+        .btn.pink {
+            background-color: var(--pink-color);
+        }
+        .btn.green {
+            background-color: var(--success-color);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        /* AI Shop */
+        #shop-section {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        #ai-models-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .ai-model-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid var(--accent-color);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
+        }
+        .ai-model-card h4 {
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        .ai-model-card p {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .ai-model-card .price {
+            font-weight: bold;
+            color: var(--success-color);
+        }
+        .ai-model-card button {
+            margin-top: auto;
+        }
+        /* Achievements Section */
+        #achievements-section {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        #achievements-list {
+            list-style: none;
+            padding: 0;
+        }
+        #achievements-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #achievements-list li:last-child {
+            border-bottom: none;
+        }
+        .achievement-name {
+            flex-grow: 1;
+        }
+        .achievement-status {
+            font-size: 0.8em;
+            color: var(--secondary-color);
+            padding: 5px 8px;
+            border-radius: 5px;
+            background-color: #e3f2fd;
+        }
+        .achievement-status.unlocked {
+            color: var(--success-color);
+            background-color: #e6ffe9;
+        }
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--background-color);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .tab-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: var(--hover-color);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .tab:hover:not(.active) {
+            background-color: #d0d8e0;
+        }
+        .tab-content {
+            display: none;
+            flex: 1;
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 0 10px 10px 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Tables in Admin Panel */
+        .admin-panel table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .admin-panel th,
+        .admin-panel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .admin-panel th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .admin-panel tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .admin-panel button.delete-btn {
+            background-color: var(--error-color);
+        }
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+        .modal h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .modal label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            font-size: 0.9em;
+        }
+        .modal input[type="text"],
+        .modal input[type="number"],
+        .modal textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .modal .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        #ai-difficulty-select {
+            margin-left: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: white;
+            color: var(--text-color);
+        }
+        #ai-difficulty-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        /* Login Container */
+        .login-container {
+            background-color: var(--card-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 50px auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        .login-container input[type="text"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Tic Tac Toe Royale</div>
+            <div id="user-info"></div>
+        </div>
+        <div id="login-section" class="login-container">
+            <h2>Login</h2>
+            <input type="text" id="username-login" placeholder="Enter username" required>
+            <button onclick="login()">Login</button>
+        </div>
+        <div id="profile-card" style="display: none;">
+            <div class="profile-header">
+                <div class="avatar" id="profile-avatar"></div>
+                <div class="user-info">
+                    <div id="profile-username" class="username"></div>
+                    <div class="currency" id="profile-currency"></div>
+                    <div id="profile-grade" class="grade"></div>
+                </div>
+                <button class="btn orange" onclick="logout()">Logout</button>
+            </div>
 
-<!---
-Ayo1-A/Ayo1-A is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
-<h1>good evening everyone </h1>
+            <div class="feature-cards">
+                <div class="feature-card" onclick="toggleSection('game-section')">
+                    <h3>Play Game</h3>
+                    <p>Challenge the AI opponent</p>
+                </div>
+                <div class="feature-card" onclick="toggleSection('shop-section')">
+                    <h3>AI Shop</h3>
+                    <p>Purchase powerful AI models</p>
+                </div>
+                <div class="feature-card" onclick="toggleSection('achievements-section')">
+                    <h3>Achievements</h3>
+                    <p>View your accomplishments</p>
+                </div>
+                <div class="feature-card" onclick="openAdminPanel()" id="admin-button" style="display: none;">
+                    <h3>Admin Panel</h3>
+                    <p>Manage game settings</p>
+                </div>
+            </div>
+        </div>
+        <div id="game-section" style="display: none;">
+            <h2 class="status" id="status"></h2>
+            <div class="game-controls">
+                <span>AI Difficulty:</span>
+                <select id="ai-difficulty-select" onchange="setAIDifficulty()">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </div>
+            <div class="game-board" id="board"></div>
+            <div class="game-controls" style="margin-top: 20px;">
+                <button class="btn orange" id="reset-btn">Reset Game</button>
+                <button class="btn green" id="ai-help-btn">Get AI Help (10 coins)</button>
+            </div>
+        </div>
+        <div id="shop-section" style="display: none;">
+            <h2>AI Shop</h2>
+            <div id="ai-models-list"></div>
+        </div>
+        <div id="achievements-section" style="display: none;">
+            <h2>Achievements</h2>
+            <ul id="achievements-list"></ul>
+        </div>
+        <div id="admin-section" class="admin-panel">
+            <div class="admin-header">
+                <h2>Admin Panel</h2>
+                <button class="btn orange" onclick="closeAdminPanel()">Close</button>
+            </div>
+            <div class="tab-container">
+                <div class="tab active" data-tab="scoreboard">Scoreboard</div>
+                <div class="tab" data-tab="missions">Missions</div>
+                <div class="tab" data-tab="ai-models">AI Models</div>
+                <div class="tab" data-tab="users">User Access</div>
+            </div>
+            <div class="tab-content active" data-tab="scoreboard">
+                <h3>Scoreboard</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Draws</th>
+                            <th>Grade</th>
+                            <th>Coins</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreboard-body"></tbody>
+                </table>
+            </div>
+            <div class="tab-content" data-tab="missions">
+                <h3>Mission Management</h3>
+                <button class="btn green" onclick="openMissionModal()">Add Mission</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Reward</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="missions-body"></tbody>
+                </table>
+            </div>
+            <div class="tab-content" data-tab="ai-models">
+                <h3>AI Models Management</h3>
+                <button class="btn green" onclick="openAIModelModal()">Add AI Model</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Strength</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ai-models-body"></tbody>
+                </table>
+            </div>
+            <div class="tab-content" data-tab="users">
+                <h3>User Management</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Admin Access</th>
+                            <th>Shop Access</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="mission-modal" class="modal">
+            <h3>Add New Mission</h3>
+            <label for="mission-name">Name:</label><br>
+            <input type="text" id="mission-name"><br><br>
+            <label for="mission-description">Description:</label><br>
+            <textarea id="mission-description"></textarea><br><br>
+            <label for="mission-reward">Reward (Coins):</label><br>
+            <input type="number" id="mission-reward"><br><br>
+            <label for="mission-condition">Condition (function):</label><br>
+            <textarea id="mission-condition" placeholder="(userData) => userData.wins > 0"></textarea><br><br>
+            <div class="btn-group">
+                <button class="btn green" onclick="addMission()">Add</button>
+                <button class="btn orange" onclick="closeMissionModal()">Cancel</button>
+            </div>
+        </div>
+
+        <div id="ai-model-modal" class="modal">
+            <h3>Add New AI Model</h3>
+            <label for="ai-model-name">Name:</label><br>
+            <input type="text" id="ai-model-name"><br><br>
+            <label for="ai-model-description">Description:</label><br>
+            <textarea id="ai-model-description"></textarea><br><br>
+            <label for="ai-model-price">Price (Coins):</label><br>
+            <input type="number" id="ai-model-price"><br><br>
+            <label for="ai-model-strength">Strength (1-10):</label><br>
+            <input type="number" id="ai-model-strength" min="1" max="10"><br><br>
+            <div class="btn-group">
+                <button class="btn green" onclick="addAIModel()">Add</button>
+                <button class="btn orange" onclick="closeAIModelModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Game state
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let winningLine = null;
+        let currentAIDifficulty = 'medium';
+
+        // AI Models
+        let aiModels = JSON.parse(localStorage.getItem('aiModels')) || [
+            { id: 1, name: 'Basic AI', description: 'Makes random moves', price: 50, strength: 3 },
+            { id: 2, name: 'Intermediate AI', description: 'Uses basic strategy', price: 100, strength: 6 },
+            { id: 3, name: 'Advanced AI', description: 'Uses minimax algorithm', price: 200, strength: 9 },
+            { id: 4, name: 'Expert AI', description: 'Unbeatable using minimax', price: 300, strength: 10 }
+        ];
+        function saveAIModels() {
+            localStorage.setItem('aiModels', JSON.stringify(aiModels));
+        }
+
+        // Missions
+        let missions = JSON.parse(localStorage.getItem('missions')) || [
+            { id: 1, name: 'First Win', description: 'Win your first game', reward: 50, condition: (userData) => userData.wins > 0 },
+            { id: 2, name: '5 Wins', description: 'Win 5 games', reward: 100, condition: (userData) => userData.wins >= 5 },
+            { id: 3, name: '10 Wins', description: 'Win 10 games', reward: 150, condition: (userData) => userData.wins >= 10 },
+            { id: 4, name: 'Draw Master', description: 'Draw 3 games', reward: 75, condition: (userData) => userData.draws >= 3 },
+            { id: 5, name: 'AI Novice', description: 'Buy your first AI model', reward: 25, condition: (userData) => userData.aiModels.length > 1 },
+            { id: 6, name: 'AI Enthusiast', description: 'Own 3 or more AI models', reward: 75, condition: (userData) => userData.aiModels.length >= 4 },
+            { id: 7, name: 'Perfect Game', description: 'Win a game without letting the AI make a move', reward: 100, condition: (userData) => userData.perfectWins > 0 },
+            { id: 8, name: 'Strategic Thinker', description: 'Use AI help to win a game', reward: 60, condition: (userData) => userData.usedAIHelpToWin > 0 }
+        ];
+        function saveMissions() {
+            localStorage.setItem('missions', JSON.stringify(missions));
+        }
+
+        // User data
+        let currentUser = null;
+        let userData = null;
+        const adminUsers = ['admin']; // Add more admin usernames here
+
+        // Initialize game
+        function init() {
+            createBoard();
+            setupEventListeners();
+            loadSavedUser();
+            updateAchievements();
+            updateStatus();
+        }
+
+        // Create game board
+        function createBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                board.appendChild(cell);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('reset-btn')?.addEventListener('click', resetGame);
+            document.getElementById('ai-help-btn')?.addEventListener('click', getAIHelp);
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', switchTab);
+            });
+        }
+
+        // Handle cell click
+        function handleCellClick(e) {
+            if (!gameActive || currentPlayer === 'O') return;
+            const cell = e.target;
+            const index = parseInt(cell.dataset.index);
+
+            if (gameState[index] !== '' || !gameActive) return;
+
+            // Make move
+            gameState[index] = currentPlayer;
+            updateBoard();
+
+            // Check for win/draw
+            const result = checkWin();
+            if (result.result === 'win') {
+                endGame(false, result.line);
+            } else if (result.result === 'draw') {
+                endGame(true);
+            } else {
+                switchPlayer();
+                setTimeout(aiMove, 500);
+            }
+        }
+
+        // AI Move
+        function aiMove() {
+            if (!gameActive || currentPlayer !== 'O') return;
+
+            const currentAI = aiModels.find(model => model.id === userData?.selectedAI) || aiModels[0]; // Default to basic AI
+
+            let move;
+            if (currentAI.id === 1 || currentAIDifficulty === 'easy') {
+                move = getRandomMove(gameState);
+            } else if (currentAI.id === 2 || currentAIDifficulty === 'medium') {
+                move = getStrategicMove(gameState, 'O');
+            } else if (currentAI.id === 3 || currentAIDifficulty === 'hard') {
+                move = getAdvancedAIMove(gameState, 'O').index;
+            } else if (currentAI.id === 4 || currentAIDifficulty === 'expert') {
+                move = getBestAIMove(gameState, 'O').index;
+            }
+
+            if (move !== null && gameState[move] === '' && gameActive) {
+                gameState[move] = 'O';
+                updateBoard();
+
+                const result = checkWin();
+                if (result.result === 'win') {
+                    endGame(false, result.line);
+                } else if (result.result === 'draw') {
+                    endGame(true);
+                } else {
+                    switchPlayer();
+                }
+            } else if (gameState.every(cell => cell !== '') && gameActive) {
+                endGame(true); // Should not happen if AI is working correctly
+            }
+        }
+
+        function setAIDifficulty() {
+            currentAIDifficulty = document.getElementById('ai-difficulty-select').value;
+            resetGame();
+        }
+
+        // Random AI move
+        function getRandomMove(board) {
+            const emptyCells = board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+            return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        }
+
+        // Strategic move
+        function getStrategicMove(board, player) {
+            const opponent = player === 'X' ? 'O' : 'X';
+            const wins = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            // Check if AI can win
+            for (let cond of wins) {
+                const [a, b, c] = cond;
+                if (board[a] === player && board[b] === player && board[c] === '') return c;
+                if (board[a] === player && board[c] === player && board[b] === '') return b;
+                if (board[b] === player && board[c] === player && board[a] === '') return a;
+            }
+
+            // Block player's win
+            for (let cond of wins) {
+                const [a, b, c] = cond;
+                if (board[a] === opponent && board[b] === opponent && board[c] === '') return c;
+                if (board[a] === opponent && board[c] === opponent && board[b] === '') return b;
+                if (board[b] === opponent && board[c] === opponent && board[a] === '') return a;
+            }
+
+            if (board[4] === '') return 4;
+
+            const corners = [0, 2, 6, 8].filter(i => board[i] === '');
+            if (corners.length > 0) {
+                return corners[Math.floor(Math.random() * corners.length)];
+            }
+
+            const edges = [1, 3, 5, 7].filter(i => board[i] === '');
+            if (edges.length > 0) {
+                return edges[Math.floor(Math.random() * edges.length)];
+            }
+
+            const empties = board.map((c, i) => c === '' ? i : null).filter(x => x !== null);
+            return empties.length ? empties[Math.floor(Math.random() * empties.length)] : null;
+        }
+
+        // Advanced AI move calculation (Minimax without memoization for simplicity in this context)
+        function getAdvancedAIMove(board, player) {
+            const availSpots = board.map((spot, index) => spot === '' ? index : null).filter(spot => spot !== null);
+
+            if (checkMiniWin(board, 'X')) return { score: -10 };
+            if (checkMiniWin(board, 'O')) return { score: 10 };
+            if (availSpots.length === 0) return { score: 0 };
+
+            const moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                const move = {};
+                move.index = availSpots[i];
+                board[availSpots[i]] = player;
+
+                if (player === 'O') {
+                    const result = getAdvancedAIMove(board, 'X');
+                    move.score = result.score;
+                } else {
+                    const result = getAdvancedAIMove(board, 'O');
+                    move.score = result.score;
+                }
+                board[availSpots[i]] = '';
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === 'O') {
+                let bestScore = -Infinity;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return moves[bestMove];
+        }
+
+        function getBestAIMove(board, player) {
+            return minimax(board.slice(), player);
+        }
+
+        function minimax(board, player) {
+            const availSpots = board.map((spot, index) => spot === '' ? index : null).filter(spot => spot !== null);
+
+            if (checkMiniWin(board, 'X')) return { score: -10 };
+            if (checkMiniWin(board, 'O')) return { score: 10 };
+            if (availSpots.length === 0) return { score: 0 };
+
+            const moves = [];
+            for (let i = 0; i < availSpots.length; i++) {
+                const move = {};
+                move.index = availSpots[i];
+                board[availSpots[i]] = player;
+                const result = minimax(board, player === 'O' ? 'X' : 'O');
+                move.score = result.score;
+                board[availSpots[i]] = '';
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === 'O') {
+                let bestScore = -Infinity;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+            return moves[bestMove];
+        }
+
+        // Check win condition
+        function checkWin() {
+            const winConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    return { result: 'win', line: condition };
+                }
+            }
+
+            return gameState.includes('') ? { result: 'continue' } : { result: 'draw' };
+        }
+
+        // Check win for minimax
+        function checkMiniWin(board, player) {
+            const wins = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            for (let line of wins) {
+                const [a, b, c] = line;
+                if (board[a] === player && board[b] === player && board[c] === player) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Switch player
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateStatus();
+            const aiHelpBtn = document.getElementById('ai-help-btn');
+            if (aiHelpBtn) {
+                aiHelpBtn.disabled = (currentPlayer === 'O');
+            }
+        }
+
+        // Update board visuals
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = gameState[index];
+                cell.className = 'cell';
+                cell.dataset.index = index;
+                if (gameState[index] === 'X') {
+                    cell.classList.add('x');
+                } else if (gameState[index] === 'O') {
+                    cell.classList.add('o');
+                }
+            });
+        }
+
+        // Update status display
+        function updateStatus() {
+            const statusDisplay = document.getElementById('status');
+            if (gameActive) {
+                statusDisplay.textContent = `Player ${currentPlayer}'s turn`;
+            }
+        }
+
+        // End game
+        function endGame(draw, line = null) {
+            gameActive = false;
+            const statusDisplay = document.getElementById('status');
+            const winner = currentPlayer === 'X' ? 'Player X' : 'AI (Player O)';
+            let coinsEarned = 0;
+            const usedHelp = userData.usedAIHelpInCurrentGame;
+            userData.usedAIHelpInCurrentGame = false; // Reset for next game
+
+            if (draw) {
+                statusDisplay.textContent = 'Game ended in a draw!';
+                userData.draws++;
+                coinsEarned = 5;
+            } else {
+                statusDisplay.textContent = `${winner} wins!`;
+                if (currentPlayer === 'X') {
+                    userData.wins++;
+                    coinsEarned = 15;
+                    if (gameState.every((val, i) => val === 'X' && line && line.includes(i))) {
+                        userData.perfectWins = (userData.perfectWins || 0) + 1;
+                    }
+                    if (usedHelp) {
+                        userData.usedAIHelpToWin = (userData.usedAIHelpToWin || 0) + 1;
+                    }
+                } else {
+                    userData.losses++;
+                    coinsEarned = 2;
+                }
+                if (line) drawWinningLine(line);
+            }
+            userData.currency += coinsEarned;
+            updatePlayerStats();
+            updateAchievements();
+        }
+
+        // Draw winning line
+        function drawWinningLine(line) {
+            if (winningLine) clearWinningLine();
+            const board = document.getElementById('board');
+            const cells = board.querySelectorAll('.cell');
+            const boardRect = board.getBoundingClientRect();
+            const firstCell = cells[line[0]].getBoundingClientRect();
+            const lastCell = cells[line[2]].getBoundingClientRect();
+            const startX = firstCell.left + firstCell.width / 2 - boardRect.left;
+            const startY = firstCell.top + firstCell.height / 2 - boardRect.top;
+            const endX = lastCell.left + lastCell.width / 2 - boardRect.left;
+            const endY = lastCell.top + lastCell.height / 2 - boardRect.top;
+            const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+            const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            winningLine = document.createElement('div');
+            winningLine.className = 'winning-line';
+            winningLine.style.width = `${distance}px`;
+            winningLine.style.transform = `rotate(${angle}deg)`;
+            winningLine.style.top = `${startY}px`;
+            winningLine.style.left = `${startX}px`;
+            board.appendChild(winningLine);
+        }
+
+        // Clear winning line
+        function clearWinningLine() {
+            if (winningLine) {
+                winningLine.remove();
+                winningLine = null;
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            updateStatus();
+            updateBoard();
+            clearWinningLine();
+            userData.usedAIHelpInCurrentGame = false;
+        }
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username-login').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            currentUser = username;
+            userData = JSON.parse(localStorage.getItem(username)) || {
+                username,
+                currency: 100,
+                wins: 0,
+                losses: 0,
+                draws: 0,
+                perfectWins: 0,
+                usedAIHelpToWin: 0,
+                achievements: [],
+                aiModels: [1],
+                selectedAI: 1,
+                usedAIHelpInCurrentGame: false
+            };
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('profile-card').style.display = 'block';
+            document.getElementById('profile-username').textContent = userData.username;
+            document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+            document.getElementById('profile-avatar').textContent = userData.username.charAt(0).toUpperCase();
+            updateGrade();
+            renderAIModels();
+            updateAchievements();
+            updatePlayerStats();
+            document.getElementById('game-section').style.display = 'block';
+            if (adminUsers.includes(currentUser)) {
+                document.getElementById('admin-button').style.display = 'block';
+            } else {
+                document.getElementById('admin-button').style.display = 'none';
+            }
+        }
+
+        // Load saved user
+        function loadSavedUser() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                userData = JSON.parse(localStorage.getItem(currentUser));
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('profile-card').style.display = 'block';
+                document.getElementById('profile-username').textContent = userData.username;
+                document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+                document.getElementById('profile-avatar').textContent = userData.username.charAt(0).toUpperCase();
+                updateGrade();
+                renderAIModels();
+                updateAchievements();
+                updatePlayerStats();
+                document.getElementById('game-section').style.display = 'block';
+                if (adminUsers.includes(currentUser)) {
+                    document.getElementById('admin-button').style.display = 'block';
+                } else {
+                    document.getElementById('admin-button').style.display = 'none';
+                }
+            } else {
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('profile-card').style.display = 'none';
+                document.getElementById('game-section').style.display = 'none';
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            userData = null;
+            document.getElementById('profile-card').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('game-section').style.display = 'none';
+            document.getElementById('username-login').value = '';
+            document.getElementById('user-info').innerHTML = '';
+        }
+
+        // Update player stats
+        function updatePlayerStats() {
+            saveUserData();
+            document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+            updateScoreboard();
+            updateUsersList();
+        }
+
+        // Save user data
+        function saveUserData() {
+            localStorage.setItem(userData.username, JSON.stringify(userData));
+            localStorage.setItem('currentUser', userData.username);
+        }
+
+        // Get AI help
+        function getAIHelp() {
+            if (userData.currency < 10 || currentPlayer !== 'X' || !gameActive) {
+                alert('Not enough coins or it\'s not your turn!');
+                return;
+            }
+            userData.currency -= 10;
+            userData.usedAIHelpInCurrentGame = true;
+            saveUserData();
+            document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+            const aiMove = getStrategicMove(gameState, 'X');
+            if (aiMove !== null && gameState[aiMove] === '' && gameActive) {
+                gameState[aiMove] = 'X';
+                updateBoard();
+                switchPlayer();
+            }
+        }
+
+        // Update achievements
+        function updateAchievements() {
+            const achievementsList = document.getElementById('achievements-list');
+            achievementsList.innerHTML = '';
+
+            missions.forEach(mission => {
+                const unlocked = userData.achievements.includes(mission.id);
+                const meetsCondition = mission.condition(userData);
+
+                if (meetsCondition && !unlocked) {
+                    userData.achievements.push(mission.id);
+                    userData.currency += mission.reward;
+                    saveUserData();
+                    document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+                    alert(`Achievement Unlocked: ${mission.name}! +${mission.reward} 🪙`);
+                }
+
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="achievement-name">${mission.name}: ${mission.description}</span> <span class="achievement-status ${unlocked ? 'unlocked' : ''}">${unlocked ? 'Unlocked' : 'Locked'}</span>`;
+                achievementsList.appendChild(li);
+            });
+        }
+
+        // Render AI models in shop
+        function renderAIModels() {
+            const container = document.getElementById('ai-models-list');
+            container.innerHTML = '';
+
+            aiModels.forEach(model => {
+                const card = document.createElement('div');
+                card.className = 'ai-model-card';
+                card.innerHTML = `
+                    <h4>${model.name}</h4>
+                    <p>${model.description}</p>
+                    <p class="price">${model.price} 🪙</p>
+                    <button class="btn ${userData.aiModels.includes(model.id) ? (userData.selectedAI === model.id ? 'green' : 'secondary-color') : 'secondary-color'}"
+                            onclick="${userData.aiModels.includes(model.id) ? (userData.selectedAI === model.id ? '' : `selectAIModel(${model.id})`) : `buyAIModel(${model.id})`}"
+                            ${userData.aiModels.includes(model.id) && userData.selectedAI === model.id ? 'disabled' : ''}>
+                        ${userData.aiModels.includes(model.id) ? (userData.selectedAI === model.id ? 'Selected' : 'Select') : `Buy for ${model.price} 🪙`}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Buy AI model
+        function buyAIModel(modelId) {
+            const model = aiModels.find(m => m.id === modelId);
+            if (userData.currency >= model.price && !userData.aiModels.includes(modelId)) {
+                userData.currency -= model.price;
+                userData.aiModels.push(modelId);
+                saveUserData();
+                document.getElementById('profile-currency').textContent = `${userData.currency} 🪙`;
+                renderAIModels();
+                alert(`You purchased ${model.name}!`);
+                updateAchievements();
+            } else if (userData.aiModels.includes(modelId)) {
+                alert('You already own this AI model.');
+            } else {
+                alert('Not enough coins!');
+            }
+        }
+
+        // Select AI model
+        function selectAIModel(modelId) {
+            userData.selectedAI = modelId;
+            saveUserData();
+            renderAIModels();
+            alert('Selected AI model changed!');
+            resetGame(); // Optionally reset game when AI is changed
+        }
+
+        // Update scoreboard
+        function updateScoreboard() {
+            const tbody = document.getElementById('scoreboard-body');
+            tbody.innerHTML = '';
+            const allUsers = Object.keys(localStorage)
+                .filter(key => !['currentUser', 'aiModels', 'missions'].includes(key))
+                .map(key => JSON.parse(localStorage.getItem(key)));
+            allUsers.sort((a, b) => b.wins - a.wins || a.losses - b.losses);
+            allUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.wins}</td>
+                    <td>${user.losses}</td>
+                    <td>${user.draws}</td>
+                    <td>${calculateGrade(user)}</td>
+                    <td>${user.currency}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Calculate Grade
+        function calculateGrade(user) {
+            const totalGames = user.wins + user.losses + user.draws;
+            if (totalGames < 5) return 'Beginner';
+            const winRatio = user.wins / totalGames;
+            if (winRatio > 0.8) return 'Master';
+            else if (winRatio > 0.6) return 'Expert';
+            else if (winRatio > 0.5) return 'Intermediate';
+            else if (winRatio > 0.3) return 'Novice';
+            else return 'Rookie';
+        }
+
+        function updateGrade() {
+            document.getElementById('profile-grade').textContent = `Grade: ${calculateGrade(userData)}`;
+        }
+
+        // Toggle sections
+        function toggleSection(sectionId) {
+            document.querySelectorAll('[id$="-section"]').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+            if (sectionId === 'game-section') {
+                resetGame();
+                updateStatus();
+            } else if (sectionId === 'shop-section') {
+                renderAIModels();
+            } else if (sectionId === 'achievements-section') {
+                updateAchievements();
+            }
+        }
+
+        // Admin Panel Functions
+        function openAdminPanel() {
+            if (adminUsers.includes(currentUser)) {
+                document.getElementById('admin-section').style.display = 'flex';
+                updateScoreboard();
+                renderMissionsAdmin();
+                renderAIModelsAdmin();
+                updateUsersList();
+            } else {
+                alert('Admin access denied.');
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-section').style.display = 'none';
+        }
+
+        function switchTab(e) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            const tab = e.target;
+            tab.classList.add('active');
+            const tabContentId = tab.dataset.tab;
+            document.querySelector(`.tab-content[data-tab="${tabContentId}"]`).classList.add('active');
+        }
+
+        // Mission Management in Admin Panel
+        function renderMissionsAdmin() {
+            const tbody = document.getElementById('missions-body');
+            tbody.innerHTML = '';
+            missions.forEach(mission => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${mission.id}</td>
+                    <td>${mission.name}</td>
+                    <td>${mission.description}</td>
+                    <td>${mission.reward}</td>
+                    <td>${mission.condition.toString()}</td>
+                    <td><button class="btn orange delete-btn" onclick="deleteMission(${mission.id})">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openMissionModal() {
+            document.getElementById('mission-modal').style.display = 'block';
+            document.getElementById('mission-name').value = '';
+            document.getElementById('mission-description').value = '';
+            document.getElementById('mission-reward').value = '';
+            document.getElementById('mission-condition').value = '';
+        }
+
+        function closeMissionModal() {
+            document.getElementById('mission-modal').style.display = 'none';
+        }
+
+        function addMission() {
+            const name = document.getElementById('mission-name').value.trim();
+            const description = document.getElementById('mission-description').value.trim();
+            const reward = parseInt(document.getElementById('mission-reward').value);
+            const conditionText = document.getElementById('mission-condition').value.trim();
+
+            if (name && description && !isNaN(reward) && conditionText) {
+                let condition;
+                try {
+                    condition = eval(`(${conditionText})`);
+                    if (typeof condition !== 'function') {
+                        throw new Error('Condition must be a function.');
+                    }
+                } catch (error) {
+                    alert('Invalid condition function: ' + error.message);
+                    return;
+                }
+                const newMission = {
+                    id: missions.length > 0 ? Math.max(...missions.map(m => m.id)) + 1 : 1,
+                    name,
+                    description,
+                    reward,
+                    condition
+                };
+                missions.push(newMission);
+                saveMissions();
+                renderMissionsAdmin();
+                closeMissionModal();
+                alert('Mission added successfully!');
+                updateAchievements(); // Check for new achievements
+            } else {
+                alert('Please fill in all mission details.');
+            }
+        }
+
+        function deleteMission(id) {
+            if (confirm('Are you sure you want to delete this mission?')) {
+                const index = missions.findIndex(m => m.id === id);
+                if (index > -1) {
+                    missions.splice(index, 1);
+                    saveMissions();
+                    renderMissionsAdmin();
+                    alert('Mission deleted!');
+                    updateAchievements();
+                }
+            }
+        }
+
+        // AI Model Management in Admin Panel
+        function renderAIModelsAdmin() {
+            const tbody = document.getElementById('ai-models-body');
+            tbody.innerHTML = '';
+            aiModels.forEach(model => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${model.id}</td>
+                    <td>${model.name}</td>
+                    <td>${model.description}</td>
+                    <td>${model.price}</td>
+                    <td>${model.strength}</td>
+                    <td><button class="btn orange delete-btn" onclick="deleteAIModel(${model.id})">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openAIModelModal() {
+            document.getElementById('ai-model-modal').style.display = 'block';
+            document.getElementById('ai-model-name').value = '';
+            document.getElementById('ai-model-description').value = '';
+            document.getElementById('ai-model-price').value = '';
+            document.getElementById('ai-model-strength').value = '';
+        }
+
+        function closeAIModelModal() {
+            document.getElementById('ai-model-modal').style.display = 'none';
+        }
+
+        function addAIModel() {
+            const name = document.getElementById('ai-model-name').value.trim();
+            const description = document.getElementById('ai-model-description').value.trim();
+            const price = parseInt(document.getElementById('ai-model-price').value);
+            const strength = parseInt(document.getElementById('ai-model-strength').value);
+            if (name && description && !isNaN(price) && !isNaN(strength) && strength >= 1 && strength <= 10) {
+                const newAIModel = {
+                    id: aiModels.length > 0 ? Math.max(...aiModels.map(m => m.id)) + 1 : 1,
+                    name,
+                    description,
+                    price,
+                    strength
+                };
+                aiModels.push(newAIModel);
+                saveAIModels();
+                renderAIModelsAdmin();
+                closeAIModelModal();
+                alert('AI Model added successfully!');
+                renderAIModels(); // Update the shop view
+            } else {
+                alert('Please fill in all AI model details correctly.');
+            }
+        }
+
+        function deleteAIModel(id) {
+            if (confirm('Are you sure you want to delete this AI model?')) {
+                const index = aiModels.findIndex(m => m.id === id);
+                if (index > -1) {
+                    if (aiModels.length > 1) {
+                        aiModels.splice(index, 1);
+                        saveAIModels();
+                        renderAIModelsAdmin();
+                        renderAIModels(); // Update the shop view
+                        alert('AI Model deleted!');
+                    } else {
+                        alert('Cannot delete the last AI model.');
+                    }
+                }
+            }
+        }
+
+        // User Access Management in Admin Panel
+        function updateUsersList() {
+            const tbody = document.getElementById('users-body');
+            tbody.innerHTML = '';
+            const allUsers = Object.keys(localStorage)
+                .filter(key => !['currentUser', 'aiModels', 'missions'].includes(key))
+                .map(key => JSON.parse(localStorage.getItem(key)));
+            allUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${adminUsers.includes(user.username) ? 'Yes' : 'No'}</td>
+                    <td>Yes</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
+correct this error in this code and generate the complete correct code version 
